@@ -32,7 +32,6 @@ const Login = () => {
 
       /* Navigate to the Feed Page */
       navigate("/");
-
     } catch (err) {
       setError(err?.response?.data || "Something went wrong!!!");
       console.error(err);
@@ -48,7 +47,7 @@ const Login = () => {
           <div className="my-2">
             <fieldset className="fieldset">
               <label className="label" htmlFor="name">
-                Email Id: {emailId}
+                Email Id:
               </label>
               <input
                 type="text"

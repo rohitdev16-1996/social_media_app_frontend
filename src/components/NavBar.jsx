@@ -77,7 +77,7 @@ const NavBar = () => {
                 <Link to="/profile">Profile</Link>
               </li>
               <li>
-                <Link to="/settings">Settings</Link>
+                <Link to="/connections">Connections</Link>
               </li>
               <div className="divider my-0"></div>
               <li>
