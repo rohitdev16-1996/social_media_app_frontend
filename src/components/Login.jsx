@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("harsh123@gmail.com");
-  const [password, setPassword] = useState("Harsh@123");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoginForm, setIsLoginForm] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -25,7 +28,6 @@ const Login = () => {
           withCredentials: true,
         },
       );
-      console.log(BASE_URL + "/login");
 
       /* Store the data in the store */
       dispatch(addUser(res.data));
@@ -38,11 +40,77 @@ const Login = () => {
     }
   };
 
+  const handleSignUp = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        {
+          firstName,
+          lastName,
+          emailId,
+          password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      /* Store the data in the store */
+      dispatch(addUser(res.data.data));
+
+      /* Navigate to the feed page */
+      navigate("/profile");
+    } catch (err) {
+      setError(err?.response?.data || "Something went wrong!!!");
+    }
+  };
+
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 w-96 shadow-sm">
         <div className="card-body">
-          <h2 className="card-title justify-center">Login</h2>
+          <h2 className="card-title justify-center">
+            {isLoginForm ? "Login" : "Sign Up"}
+          </h2>
+
+          {!isLoginForm && (
+            <>
+              {/* FirstName Block */}
+              <div className="my-2">
+                <fieldset className="fieldset">
+                  <label className="label" htmlFor="name">
+                    First Name:
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    className="input"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                  />
+                </fieldset>{" "}
+              </div>
+
+              {/* LastNme Block */}
+              <div className="my-2">
+                <fieldset className="fieldset">
+                  <label className="label" htmlFor="name">
+                    Last Name:
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    className="input"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                  />
+                </fieldset>
+              </div>
+            </>
+          )}
+
           {/* Email Block */}
           <div className="my-2">
             <fieldset className="fieldset">
@@ -80,10 +148,24 @@ const Login = () => {
           {/* Error Message */}
           <p className="text-red-500">{error}</p>
 
-          {/* Login Button Block */}
+          {/* Toggle to Sign Up / Login */}
+          <p className="text-center text-sm py-2 opacity-80">
+            {isLoginForm ? "New user? " : "Existing user? "}
+            <span
+              className="text-primary font-medium cursor-pointer hover:underline transition-colors"
+              onClick={() => setIsLoginForm((value) => !value)}
+            >
+              {isLoginForm ? "Sign up here" : "Log in here"}
+            </span>
+          </p>
+
+          {/* SignUp / Login Button Block */}
           <div className="card-actions justify-center">
-            <button className="btn btn-primary" onClick={handleLogin}>
-              Login
+            <button
+              className="btn btn-primary"
+              onClick={isLoginForm ? handleLogin : handleSignUp}
+            >
+              {isLoginForm ? "Login" : "Sign Up"}
             </button>
           </div>
         </div>
