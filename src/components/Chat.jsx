@@ -19,6 +19,20 @@ const Chat = () => {
   const user = useSelector((store) => store.user);
   const userId = user?._id;
 
+  const fetchChatMessages = async () => {
+    const chat = await axios.get(BASE_URL + "/chat/" + targetUserId, {
+      withCredentials: true,
+    });
+
+    const chatMessages = chat?.data?.messages.map((msg) => ({
+      firstName: msg?.senderId?.firstName,
+      lastName: msg?.senderId?.lastName,
+      text: msg.text,
+    }));
+
+    setMessages(chatMessages);
+  };
+
   /* Get the connections to get the details of the User we are chatting with like User Name etc. */
   const connections = useSelector((store) => store.connections);
 
@@ -52,6 +66,10 @@ const Chat = () => {
       text: newMessage,
     });
   };
+
+  useEffect(() => {
+    fetchChatMessages();
+  }, []);
 
   /* If the page was refreshed, the store will be empty, so load the connections again */
   useEffect(() => {
